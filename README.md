@@ -1,18 +1,32 @@
 # Atalaya
 
-Auditoría de la superficie de ejecución de Windows. Enumera **todo lo que puede
-ejecutarse solo** en una máquina, analiza cada binario y emite un informe
+**Auditoría forense de la superficie de ejecución de Windows.** Enumera *todo lo que
+puede ejecutarse solo* en una máquina, analiza cada binario y emite un informe
 priorizado y navegable.
+
+<sub>🇬🇧 **On-demand forensic audit of the Windows execution surface.** Atalaya enumerates
+every autostart mechanism, analyzes each binary (own PE parser, entropy, Authenticode,
+SHA256) and produces a prioritized, self-contained HTML report. Built to do Autoruns +
+VirusTotal better — and in Spanish.</sub>
+
+[![tests](https://github.com/FranSOC-1/atalaya/actions/workflows/tests.yml/badge.svg)](https://github.com/FranSOC-1/atalaya/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![SO](https://img.shields.io/badge/SO-Windows-0078D6)
+![Dependencias](https://img.shields.io/badge/dependencias-0%20obligatorias-brightgreen)
+![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 
 No es un antivirus. No tiene protección residente, ni driver de kernel, ni feed
 de firmas. Es la herramienta que usa un técnico cuando le traen un PC y necesita
 responder en dos minutos a *«¿qué se ejecuta aquí y por qué?»*.
 
+![Informe de Atalaya](docs/captura.png)
+
+<sub>Informe de ejemplo generado con los datos sintéticos del banco de pruebas
+(`python docs/generar_captura.py`). Ninguna captura contiene datos de una máquina real.</sub>
+
 ```bash
 python atalaya.py
 ```
-
-![estado](https://img.shields.io/badge/fase-0%20verificada-brightgreen)
 
 ---
 
@@ -137,6 +151,20 @@ pip install yara-python      # opcional, activa el motor de reglas
 ```
 
 ---
+
+## Arquitectura
+
+Una tubería en cuatro etapas: recolectar la superficie de persistencia, analizar
+cada binario, puntuar con el motor de heurísticas y emitir el informe.
+
+```mermaid
+flowchart LR
+    C["Colectores<br/>registro · inicio · servicios<br/>tareas · WMI · procesos"]
+    A["Analizadores<br/>parser PE · Authenticode<br/>SHA256 · YARA"]
+    M["Motor de heurísticas<br/>contexto vs contenido<br/>la firma anula el contenido"]
+    I["Informe HTML<br/>priorizado · filtros · búsqueda"]
+    C --> A --> M --> I
+```
 
 ## Estructura
 
