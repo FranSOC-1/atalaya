@@ -1,0 +1,3 @@
+# Atalaya funciona sin ninguna dependencia externa.
+# Este paquete es opcional: activa el motor de reglas YARA.
+yara-python>=4.5

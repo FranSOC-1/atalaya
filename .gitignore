@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+informe.html
+informe.json
+*.log
+.venv/
