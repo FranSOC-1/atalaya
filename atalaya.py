@@ -31,7 +31,16 @@ from nucleo.modelos import ETIQUETA, Informe, Nivel
 from nucleo.util import es_admin, sha256_fichero, tamano
 from reglas.heuristicas import evaluar
 
-RAIZ = os.path.dirname(os.path.abspath(__file__))
+__version__ = "0.1.0"
+
+if getattr(sys, "frozen", False):
+    # Empaquetado con PyInstaller: los recursos (reglas/*.yar) se extraen a
+    # sys._MEIPASS, y el informe se escribe junto al .exe, no en el temporal.
+    RAIZ = sys._MEIPASS  # type: ignore[attr-defined]
+    BASE_SALIDA = os.path.dirname(sys.executable)
+else:
+    RAIZ = os.path.dirname(os.path.abspath(__file__))
+    BASE_SALIDA = RAIZ
 
 COLOR = {
     Nivel.CRITICO: "\033[91m",
@@ -173,8 +182,9 @@ def main() -> int:
         prog="atalaya",
         description="Audita que se ejecuta en esta maquina Windows y por que.",
     )
-    p.add_argument("--salida", default=os.path.join(RAIZ, "informe.html"),
+    p.add_argument("--salida", default=os.path.join(BASE_SALIDA, "informe.html"),
                    help="ruta del informe HTML")
+    p.add_argument("--version", action="version", version=f"Atalaya {__version__}")
     p.add_argument("--json", dest="json_salida", help="volcado JSON adicional")
     p.add_argument("--sin-procesos", action="store_true",
                    help="no enumerar procesos vivos (escaneo mas rapido)")

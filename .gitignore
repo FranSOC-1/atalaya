@@ -4,3 +4,6 @@ informe.html
 informe.json
 *.log
 .venv/
+build/
+dist/
+*.spec
