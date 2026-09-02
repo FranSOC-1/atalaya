@@ -93,6 +93,9 @@ independientes.
 Resultado sobre este equipo: de **2 críticos y 48 avisos falsos** a **0 hallazgos**,
 sin perder ni una detección del banco de pruebas.
 
+📄 **La historia completa, con el código, la correlación por máximo y los números:**
+[Diseño de la detección — de 48 falsos positivos a cero](docs/diseno-deteccion.md).
+
 ---
 
 ## Verificación
