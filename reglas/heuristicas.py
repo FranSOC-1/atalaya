@@ -96,29 +96,30 @@ APIS_EVASION = {
 }
 
 # Binarios legitimos de Windows abusados para ejecutar codigo (LOLBins).
+# Cada patron declara su tecnica MITRE ATT&CK, que la senal arrastra.
 PATRONES_LOLBIN = [
     (re.compile(r"powershell.*\s-e(nc|ncoded|ncodedcommand)?\s+[A-Za-z0-9+/=]{40,}", re.I),
-     "PowerShell con comando codificado en base64", 45),
+     "PowerShell con comando codificado en base64", 45, "T1059.001"),
     (re.compile(r"powershell.*(-w(indowstyle)?\s+hidden|-nop\b|-noni\b|-ep\s+bypass|-executionpolicy\s+bypass)", re.I),
-     "PowerShell oculto o saltandose la politica de ejecucion", 30),
+     "PowerShell oculto o saltandose la politica de ejecucion", 30, "T1059.001"),
     (re.compile(r"\bmshta\b.*(http|javascript:|vbscript:)", re.I),
-     "mshta ejecutando contenido remoto o script en linea", 45),
+     "mshta ejecutando contenido remoto o script en linea", 45, "T1218.005"),
     (re.compile(r"\brundll32\b.*(javascript:|http)", re.I),
-     "rundll32 ejecutando script o URL", 45),
+     "rundll32 ejecutando script o URL", 45, "T1218.011"),
     (re.compile(r"\bregsvr32\b.*(/i:\s*http|scrobj\.dll)", re.I),
-     "regsvr32 cargando scriptlet remoto (Squiblydoo)", 45),
+     "regsvr32 cargando scriptlet remoto (Squiblydoo)", 45, "T1218.010"),
     (re.compile(r"\bcertutil\b.*(-decode|-urlcache|-f\s+-split)", re.I),
-     "certutil usado para descargar o decodificar carga util", 40),
+     "certutil usado para descargar o decodificar carga util", 40, "T1105"),
     (re.compile(r"\bbitsadmin\b.*(/transfer|/create)", re.I),
-     "bitsadmin transfiriendo ficheros", 35),
+     "bitsadmin transfiriendo ficheros", 35, "T1197"),
     (re.compile(r"\bwmic\b.*process.*call\s+create", re.I),
-     "wmic creando procesos", 35),
+     "wmic creando procesos", 35, "T1047"),
     (re.compile(r"(curl|wget|Invoke-WebRequest|iwr|Invoke-Expression|iex)\b.*http", re.I),
-     "descarga y ejecucion desde red en la linea de comandos", 35),
+     "descarga y ejecucion desde red en la linea de comandos", 35, "T1105"),
     (re.compile(r"\b(msbuild|installutil|regasm|regsvcs|cmstp|mavinject)\b", re.I),
-     "binario del sistema usado habitualmente para evadir listas blancas", 25),
+     "binario del sistema usado habitualmente para evadir listas blancas", 25, "T1127"),
     (re.compile(r"FromBase64String|::FromBase64|\[Convert\]", re.I),
-     "decodificacion base64 embebida en el comando", 25),
+     "decodificacion base64 embebida en el comando", 25, "T1027"),
 ]
 
 # Suscripciones WMI que Windows trae de serie: no son persistencia hostil.
@@ -288,10 +289,10 @@ def fichero_ausente(a: Artefacto):
 def lolbin(a: Artefacto):
     senales = []
     cmd = a.comando or ""
-    for patron, descripcion, puntos in PATRONES_LOLBIN:
+    for patron, descripcion, puntos, tecnica in PATRONES_LOLBIN:
         if patron.search(cmd):
             senales.append(Senal("LOLBIN", descripcion,
-                                 f"Comando: {cmd[:400]}", puntos))
+                                 f"Comando: {cmd[:400]}", puntos, attack=tecnica))
     return senales
 
 
@@ -490,4 +491,7 @@ def evaluar(a: Artefacto) -> Artefacto:
     a.senales = [s for s in senales if s.puntos != 0 or s.codigo.startswith("FIRMA")]
     a.puntos = max(0, total)
     a.nivel = nivel_de(a.puntos)
+
+    from reglas.attack import tecnicas_de
+    a.attack = tecnicas_de(a)
     return a

@@ -59,6 +59,7 @@ class Senal:
     detalle: str
     puntos: int
     categoria: str = "contexto"
+    attack: str | None = None  # técnica MITRE ATT&CK cuando la señal la identifica (ej. "T1218.010")
 
 
 @dataclass
@@ -81,6 +82,7 @@ class Artefacto:
 
     # Veredicto
     senales: list = field(default_factory=list)
+    attack: list = field(default_factory=list)  # técnicas MITRE ATT&CK: [{id, nombre, url, motivo}]
     puntos: int = 0
     nivel: Nivel = Nivel.LIMPIO
 

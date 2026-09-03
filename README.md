@@ -98,6 +98,16 @@ sin perder ni una detección del banco de pruebas.
 
 ---
 
+## Cobertura MITRE ATT&CK
+
+Cada hallazgo cita su técnica de [ATT&CK](https://attack.mitre.org/) (`Txxxx`),
+separando el **mecanismo de arranque** (cómo persiste: `T1547.001`, `T1053.005`,
+`T1546.003`…) de la **conducta detectada** (qué hace: `T1218.010`, `T1059.001`,
+`T1055`…). El mapeo está en código ([`reglas/attack.py`](reglas/attack.py)) y viaja
+en el export JSON de cada artefacto, listo para un SIEM.
+
+**Tabla completa:** [Mapeo a MITRE ATT&CK](docs/mitre-attack.md).
+
 ## Verificación
 
 ```bash
